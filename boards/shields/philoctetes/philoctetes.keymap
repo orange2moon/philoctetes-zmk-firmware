@@ -1,0 +1,133 @@
+/*
+ * Copyright (c) 2025 Justin
+ *
+ * SPDX-License-Identifier: MIT
+ */
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/ext_power.h>
+
+// Mouse emulation
+#define ZMK_POINTING_DEFAULT_MOVE_VAL 600
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 10
+#include <dt-bindings/zmk/pointing.h>
+// This seems to be the old way... but the pointing.h file is not working
+#include <dt-bindings/zmk/mouse.h>
+
+#define _COLMAK 0
+#define _NAV    1
+#define _SYM_QA 2
+#define _NUM    3
+#define _SYMBOL 4
+#define _FUNC   5
+#define _NUMPAD 6
+
+&kscan0 {
+    debounce-press-ms = <2>;
+    debounce-release-ms = <3>;
+};
+
+/ {
+    behaviors {
+        mt_s: modifier_tap_left {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MODIFIER_TAP_LEFT";
+            #binding-cells = <2>;
+            tapping-term-ms = <195>;
+            quick-tap-ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+        mt_q: modifier_tap_right {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MODIFIER_TAP_RIGHT";
+            #binding-cells = <2>;
+            tapping-term-ms = <185>;
+            quick-tap-ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+        lt_l: layer_tap_left {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_LEFT";
+            #binding-cells = <2>;
+            tapping-term-ms = <185>;
+            quick-tap-ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&mo>, <&kp>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        _COLMAK {
+            bindings = <
+                &kp ESC   &kp Q          &kp W         &kp F         &kp P         &kp B         &kp J     &kp L         &kp U         &kp Y         &kp SEMI      &kp BSPC
+                &kp APOS  &mt_s LGUI A   &mt_s LALT R  &mt_s LCTRL S &mt_q LSHFT T &kp G         &kp M     &mt_q LSHFT N &mt_s LCTRL E &mt_s LALT I  &mt_s LGUI O  &kp RET
+                &sk LSHFT &kp X          &kp C         &kp D         &kp V         &kp Z         &kp K     &kp H         &kp COMMA     &kp DOT       &kp FSLH      &sk RSHFT
+                                        &lt_l _NAV BSPC &lt_l _SYM_QA SPACE &lt_l _NUMPAD DEL     &lt _FUNC ESC &lt_l _NUM SPACE &lt_l _SYMBOL TAB
+            >;
+        };
+
+
+        _NAV {
+            bindings = <
+                &kp ESC &msc SCRL_LEFT &msc SCRL_DOWN &msc SCRL_UP &msc SCRL_RIGHT &kp PSCRN    &kp CAPS &kp PSCRN &kp K_VOL_DN &kp K_VOL_UP &kp K_MUTE &trans 
+                &kp DQT &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &kp C_BRI_UP                             &kp PG_UP &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans 
+                &trans LSFT &kp K_PP &kp K_VOL_DN &kp K_VOL_UP &kp K_MUTE &kp C_BRI_DN 		&kp PG_DN &msc SCRL_LEFT &msc SCRL_DOWN &msc SCRL_UP &msc SCRL_RIGHT &trans
+                                                        &trans &trans  &trans                   &trans  &trans &trans
+                        >;
+            };
+
+        _SYM_QA {
+            bindings = <
+                &kp ESC   &none    &none    &none     &none     &none        &kp PLUS  &kp LPAR  &kp LBRC  &kp LBKT  &kp PIPE  &trans
+                &kp APOS  &kp LGUI &kp LALT &kp LCTRL &kp LSHFT &none        &kp EQUAL &kp RPAR  &kp RBRC  &kp RBKT  &kp BSLH  &trans
+                &trans &none    &none    &none     &none     &none        &kp MINUS &kp UNDER &kp LT    &kp GT    &kp FSLH  &trans
+                                           &trans     &trans &trans       &trans    &trans    &trans
+            >;
+        };
+
+        _NUM {
+            bindings = <
+                &kp ESC   &kp LPAR  &kp N7  &kp N8   &kp N9    &kp PLUS     &kp PLUS  &kp LPAR  &kp LBRC  &kp LBKT  &kp PIPE  &trans
+                &kp APOS  &kp RPAR  &kp N4  &kp N5   &kp N6    &kp EQUAL    &kp RET   &kp RSHFT &kp RCTRL &kp LALT  &kp LGUI  &trans
+                &trans &kp GRAVE &kp N1  &kp N2   &kp N3    &kp MINUS    &kp MINUS &kp UNDER &kp COMMA &kp DOT   &kp FSLH  &trans
+                                           &trans &kp N0    &trans       &trans    &trans     &trans
+            >;
+        };
+
+        _SYMBOL {
+            bindings = <
+                &kp ESC   &kp LBRC  &kp AMPS &kp STAR  &kp LPAR  &kp RBRC     &caps_word &kp PSCRN &kp C_VOL_DN &kp C_VOL_UP &kp C_MUTE &trans
+                &kp DQT  &kp APOS  &kp DLLR &kp PRCNT &kp CARET &kp PLUS     &kp PG_UP  &kp RSHFT &kp RCTRL    &kp LALT     &kp LGUI   &trans
+                &trans &kp TILDE &kp EXCL &kp AT    &kp HASH  &kp PIPE     &kp PG_DN  &kp SCRL_LEFT &msc SCRL_DOWN &msc SCRL_UP &msc SCRL_RIGHT &trans
+                                            &kp BSPC  &kp SPACE &trans       &trans     &trans  &trans
+            >;
+        };
+
+        _FUNC {
+            bindings = <
+                &kp ESC   &kp F12   &kp F7   &kp F8    &kp F9    &kp PSCRN    &rgb_ug RGB_SPI &rgb_ug RGB_EFF &rgb_ug RGB_BRI &rgb_ug RGB_HUI &rgb_ug RGB_SAI &sys_reset
+                &kp LANG2 &kp F11   &kp F4   &kp F5    &kp F6    &kp SLCK     &rbg_up RBG_TOG &kp RSHFT       &kp LCTRL       &kp LALT        &kp LGUI        &none
+                &tog LANG1 &kp F10   &kp F1   &kp F2    &kp F3    &kp PAUSE_BREAK &rgb_ug RGB_SPD &rgb_ug RGB_EFR &rgb_ug RGB_BRD &rgb_ug RGB_HUD &rgb_ug RGB_SAD &trans
+                                            &kp BSPC  &kp SPACE &trans        &trans     &trans &kp TAB
+            >;
+        };
+
+        _NUMPAD {
+            bindings = <
+                &kp ESC   &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &kp KP_PLUS &kp KP_N7 &kp KP_N8 &kp KP_N9 &kp KP_MULTIPLY &kp BSPC
+                &kp APOS  &kp APOS  &kp N4   &kp N5    &kp N6    &none        &kp EQUAL   &kp KP_N4 &kp KP_N5 &kp KP_N6 &kp KP_DIVIDE   &kp KP_ENTER
+                &sk LSHFT &kp GRAVE &kp N1   &kp N2    &kp N3    &none        &kp MINUS   &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_DOT      &kp COMMA
+                                            &kp BSPC  &kp N0    &trans       &trans      &kp KP_N0 &trans
+            >;
+        };
+
+
+
+    };
+};
