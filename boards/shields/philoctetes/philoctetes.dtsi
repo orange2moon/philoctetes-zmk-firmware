@@ -16,9 +16,10 @@
     };
 
     chosen {
-        zmk,ksca = &kscan0;
+        zmk,kscan = &kscan0;
         zmk,physical-layout = &default_layout;
         zmk,battery = &vbatt;
+        zmk,underglow = &led_strip;
     };
 
     default_transform: keymap_transform_0 {
